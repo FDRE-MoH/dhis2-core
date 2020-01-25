@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.hisp.dhis.analytics.AnalyticsFinancialYearStartKey.FINANCIAL_YEAR_OCTOBER;
+import static org.hisp.dhis.analytics.AnalyticsFinancialYearStartKey.FINANCIAL_YEAR_NOVEMBER;
 
 /**
  * @author Lars Helge Overland
@@ -420,12 +420,12 @@ public class RelativePeriods
 
         if ( isThisSixMonth() || isLastSixMonth() || isLast2SixMonths() )
         {
-            return PeriodType.getPeriodTypeByName( SixMonthlyPeriodType.NAME );
+            return PeriodType.getPeriodTypeByName( SixMonthlyNovemberPeriodType.NAME );
         }
 
         if ( isThisFinancialYear() || isLastFinancialYear() || isLast5FinancialYears() )
         {
-            return PeriodType.getPeriodTypeByName( FinancialOctoberPeriodType.NAME );
+            return PeriodType.getPeriodTypeByName( FinancialNovemberPeriodType.NAME );
         }
 
         return PeriodType.getPeriodTypeByName( YearlyPeriodType.NAME );
@@ -502,7 +502,7 @@ public class RelativePeriods
 
         Date rewindedDate = periodType.getRewindedDate( date, rewindedPeriods );
 
-        return getRelativePeriods( rewindedDate, format, dynamicNames, FINANCIAL_YEAR_OCTOBER );
+        return getRelativePeriods( rewindedDate, format, dynamicNames, FINANCIAL_YEAR_NOVEMBER );
     }
 
     /**
@@ -510,7 +510,7 @@ public class RelativePeriods
      */
     public List<Period> getRelativePeriods()
     {
-        return getRelativePeriods( null, null, false, FINANCIAL_YEAR_OCTOBER );
+        return getRelativePeriods( null, null, false, FINANCIAL_YEAR_NOVEMBER );
     }
 
     /**
@@ -522,7 +522,7 @@ public class RelativePeriods
      */
     public List<Period> getRelativePeriods( I18nFormat format, boolean dynamicNames )
     {
-        return getRelativePeriods( null, format, dynamicNames, FINANCIAL_YEAR_OCTOBER );
+        return getRelativePeriods( null, format, dynamicNames, FINANCIAL_YEAR_NOVEMBER );
     }
 
     /**
@@ -633,13 +633,13 @@ public class RelativePeriods
         if ( isThisSixMonth() )
         {
             Date calendarDate = _date != null ? _date : PeriodType.getCalendar().today().toJdkDate();
-            periods.add( getRelativePeriod( new SixMonthlyPeriodType(), LAST_SIXMONTH, calendarDate, dynamicNames, format ) );
+            periods.add( getRelativePeriod( new SixMonthlyNovemberPeriodType(), LAST_SIXMONTH, calendarDate, dynamicNames, format ) );
         }
 
         if ( isLastSixMonth() )
         {
             Date calendarDate = _date != null ? _date : PeriodType.getCalendar().today().toJdkDate();
-            periods.add( getRelativePeriod( new SixMonthlyPeriodType(), LAST_SIXMONTH, new DateTime( calendarDate ).minusMonths( 6 ).toDate(), dynamicNames, format ) );
+            periods.add( getRelativePeriod( new SixMonthlyNovemberPeriodType(), LAST_SIXMONTH, new DateTime( calendarDate ).minusMonths( 6 ).toDate(), dynamicNames, format ) );
         }
 
         if ( isWeeksThisYear() )
@@ -697,7 +697,7 @@ public class RelativePeriods
         if ( isLast2SixMonths() )
         {
             Date calendarDate = _date != null ? _date : PeriodType.getCalendar().today().toJdkDate();
-            periods.addAll( getRollingRelativePeriodList( new SixMonthlyPeriodType(), SIXMONHTS_LAST_2, new DateTime( calendarDate ).minusMonths( 6 ).toDate(), dynamicNames, format ) );
+            periods.addAll( getRollingRelativePeriodList( new SixMonthlyNovemberPeriodType(), SIXMONHTS_LAST_2, new DateTime( calendarDate ).minusMonths( 6 ).toDate(), dynamicNames, format ) );
         }
 
         if ( isLast4Weeks() )
@@ -766,7 +766,7 @@ public class RelativePeriods
 
         if ( isThisFinancialYear() )
         {
-            periods.add( getRelativePeriod( financialPeriodType, THIS_FINANCIAL_YEAR, calendarDate, dynamicNames, format ) );
+            periods.add( getRelativePeriod( new FinancialNovemberPeriodType(), THIS_FINANCIAL_YEAR, calendarDate, dynamicNames, format ) );
         }
 
         date = new DateTime( date ).minusMonths( MONTHS_IN_YEAR ).toDate(); // Rewind one year
@@ -775,12 +775,12 @@ public class RelativePeriods
 
         if ( isLastFinancialYear() )
         {
-            periods.add( getRelativePeriod( financialPeriodType, LAST_FINANCIAL_YEAR, calendarDate, dynamicNames, format ) );
+            periods.add( getRelativePeriod( new FinancialNovemberPeriodType() , LAST_FINANCIAL_YEAR, calendarDate, dynamicNames, format ) );
         }
 
         if ( isLast5FinancialYears() )
         {
-            periods.addAll( getRollingRelativePeriodList( financialPeriodType, LAST_5_FINANCIAL_YEARS, date, dynamicNames, format ) );
+            periods.addAll( getRollingRelativePeriodList( new FinancialNovemberPeriodType(), LAST_5_FINANCIAL_YEARS, date, dynamicNames, format ) );
         }
 
         return periods;

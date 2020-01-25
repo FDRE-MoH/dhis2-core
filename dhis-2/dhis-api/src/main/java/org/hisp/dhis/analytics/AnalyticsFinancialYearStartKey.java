@@ -31,6 +31,7 @@ package org.hisp.dhis.analytics;
 import org.hisp.dhis.period.FinancialAprilPeriodType;
 import org.hisp.dhis.period.FinancialJulyPeriodType;
 import org.hisp.dhis.period.FinancialOctoberPeriodType;
+import org.hisp.dhis.period.FinancialNovemberPeriodType;
 import org.hisp.dhis.period.FinancialPeriodType;
 
 /**
@@ -40,7 +41,8 @@ public enum AnalyticsFinancialYearStartKey
 {
     FINANCIAL_YEAR_APRIL( "FINANCIAL_YEAR_APRIL", new FinancialAprilPeriodType() ),
     FINANCIAL_YEAR_JULY( "FINANCIAL_YEAR_JULY", new FinancialJulyPeriodType() ),
-    FINANCIAL_YEAR_OCTOBER( "FINANCIAL_YEAR_OCTOBER", new FinancialOctoberPeriodType() );
+    FINANCIAL_YEAR_OCTOBER( "FINANCIAL_YEAR_OCTOBER", new FinancialOctoberPeriodType() ),
+    FINANCIAL_YEAR_NOVEMBER("FINANCIAL_YEAR_NOVEMBER", new FinancialNovemberPeriodType() );
 
     private final String name;
 
