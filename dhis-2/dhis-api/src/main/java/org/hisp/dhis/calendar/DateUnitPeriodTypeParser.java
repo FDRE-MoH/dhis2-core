@@ -29,6 +29,8 @@ package org.hisp.dhis.calendar;
  */
 
 import com.google.common.collect.Maps;
+
+import org.hisp.dhis.calendar.impl.EthiopianCalendar;
 import org.hisp.dhis.calendar.impl.Iso8601Calendar;
 import org.hisp.dhis.period.BiWeeklyPeriodType;
 import org.hisp.dhis.period.PeriodType;
@@ -208,6 +210,11 @@ public class DateUnitPeriodTypeParser implements PeriodTypeParser
                 return null;
             }
 
+            if ( calendar instanceof EthiopianCalendar )
+            {
+                return getEthiopianQuarterInterval( calendar, year, quarter );
+            }
+
             DateTimeUnit start = new DateTimeUnit( year, ((quarter - 1) * 3) + 1, 1, calendar.isIso8601() );
             DateTimeUnit end = new DateTimeUnit( start );
             end = calendar.plusMonths( end, 3 );
@@ -358,5 +365,32 @@ public class DateUnitPeriodTypeParser implements PeriodTypeParser
             return date;
         }
 
+    }
+
+    //--------------------------------------------------
+    // Ethiopian calendar helper
+    //--------------------------------------------------
+
+    private DateInterval getEthiopianQuarterInterval( Calendar calendar, Integer year, Integer quarter )
+    {
+        int monthOffset = -2;
+        int month = ( ( quarter - 1 ) * 3 ) + 1;
+        month = month + monthOffset;
+
+        if ( month < 0 )
+        {
+            month += 12;
+            year -= 1;
+        }
+
+        DateTimeUnit start = new DateTimeUnit( year, month, 1, calendar.isIso8601() );
+        DateTimeUnit end =new DateTimeUnit( start );
+        end = calendar.plusMonths( end, 3 );
+        end = calendar.minusDays( end, 1 );
+
+        start.setDayOfWeek( calendar.weekday( start ) );
+        end.setDayOfWeek( calendar.weekday( end ) );
+
+        return new DateInterval( start, end );
     }
 }

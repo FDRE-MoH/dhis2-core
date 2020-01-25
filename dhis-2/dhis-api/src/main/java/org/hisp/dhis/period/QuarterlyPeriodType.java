@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.calendar.Calendar;
 import org.hisp.dhis.calendar.DateTimeUnit;
+import org.hisp.dhis.calendar.impl.EthiopianCalendar;
 
 import java.util.Date;
 import java.util.List;
@@ -78,6 +79,11 @@ public class QuarterlyPeriodType
     @Override
     public Period createPeriod( DateTimeUnit dateTimeUnit, Calendar calendar )
     {
+        if ( calendar instanceof EthiopianCalendar )
+        {
+            return getEthiopianQuarterPeriod( dateTimeUnit, calendar );
+        }
+
         DateTimeUnit start = new DateTimeUnit( dateTimeUnit );
 
         start.setMonth( ((dateTimeUnit.getMonth() - 1) - ((dateTimeUnit.getMonth() - 1) % 3)) + 1 );
@@ -176,6 +182,23 @@ public class QuarterlyPeriodType
             newUnit = calendar.fromIso( newUnit );
         }
 
+        if ( calendar instanceof EthiopianCalendar )
+        {
+            switch ( newUnit.getMonth() )
+            {
+                case 11:
+                    return newUnit.getYear() + 1 + "Q1";
+                case 2:
+                    return newUnit.getYear() + "Q2";
+                case 5:
+                    return newUnit.getYear() + "Q3";
+                case 8:
+                    return newUnit.getYear() + "Q4";
+                default:
+                    throw new IllegalArgumentException( "Month not valid [11,2,5,8], was given " + dateTimeUnit.getMonth() );
+            }
+        }
+
         switch ( newUnit.getMonth() )
         {
             case 1:
@@ -218,5 +241,38 @@ public class QuarterlyPeriodType
         dateTimeUnit = cal.minusMonths( dateTimeUnit, rewindedPeriods * 3 );
 
         return cal.toIso( dateTimeUnit ).toJdkDate();
+    }
+
+    /*
+     * Ethiopian calendar helper
+     */
+    private Period getEthiopianQuarterPeriod(  DateTimeUnit dateTimeUnit, Calendar calendar )
+    {
+        int startMonth = ((dateTimeUnit.getMonth() - 2) - ((dateTimeUnit.getMonth() - 2) % 3)) + 2;
+        int startYear = dateTimeUnit.getYear();
+
+        if ( dateTimeUnit.getMonth() == 1 )
+        {
+                startMonth = -1;
+        }
+
+        if ( startMonth > 12 )
+        {
+            startMonth = 1;
+            startYear = startYear + 1;
+        }
+        else if ( startMonth < 1 )
+        {
+            startMonth = startMonth + 12;
+            startYear = startYear - 1;
+        }
+
+        DateTimeUnit start = new DateTimeUnit( startYear, startMonth, 1, dateTimeUnit.isIso8601() );
+
+        DateTimeUnit end = new DateTimeUnit( start );
+        end = calendar.plusMonths(end, 2 );
+        end.setDay( calendar.daysInMonth( end.getYear(), end.getMonth() ) );
+
+        return toIsoPeriod( start, end, calendar );
     }
 }
