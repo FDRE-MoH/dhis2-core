@@ -520,12 +520,14 @@ public abstract class PeriodType
             return null;
         }
 
+        DateTimeUnit calFrom = dateInterval.getFrom();
+
         org.hisp.dhis.calendar.Calendar cal = getCalendar();
 
-        final DateTimeUnit from = cal.toIso( dateInterval.getFrom() );
+        final DateTimeUnit from = cal.toIso( calFrom );
         final DateTimeUnit to = cal.toIso( dateInterval.getTo() );
 
-        return new Period( this, from.toJdkDate(), to.toJdkDate(), getIsoDate( from ) );
+        return new Period( this, from.toJdkDate(), to.toJdkDate(), getIsoDate( calFrom ) );
     }
 
     /**
